@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif, 'Lexend';
+  line-height: 1.5;
+  font-weight: 400;
+
+  background-color: #ffffff;
+
+  margin: 0;
+  display: flex;
+  place-items: center;
+}
+
+#root {
+  width: 100%;
+}
