@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import Register from "./auth/Register";
 import ForgotPassword from "./auth/ForgotPassword";
+import NavBar from "./components/NavBar";
 
 export default function MainRoutes() {
   const navigate = useNavigate()
@@ -23,9 +24,23 @@ export default function MainRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LogIn/>}/>
-      <Route path="/home" element={<Home/>}/>
+      <Route path="/home" element={<CreateHomeElement route={<Home/>}/>}/>
       <Route path="/register" element={<Register/>}/>
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
     </Routes>
+  )
+}
+
+interface ICreateHomeElement{
+  route: React.ReactNode
+}
+function CreateHomeElement({
+  route
+} : ICreateHomeElement) {
+  return(
+    <>
+      <NavBar/>
+      {route}
+    </>
   )
 }
