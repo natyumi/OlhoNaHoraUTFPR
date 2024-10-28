@@ -5,10 +5,11 @@ import CreateActivityModal from './CreateActivityModal';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { database, auth } from '../firebase';
 import { onValue, ref } from 'firebase/database';
-import { IoIosArrowDown, IoIosArrowUp} from 'react-icons/io';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Progression from './components/Progression';
 import ActivityTable from './components/ActivitiesTable';
 import { useNavigate } from 'react-router-dom';
+import { generateFromUrl } from './wordData';
 
 export interface Activities {
   name: string,
@@ -28,7 +29,7 @@ export default function Home() {
   const [activitiesG3, setActivitiesG3] = useState<Activities[]>([])
   const navigate = useNavigate()
 
-  function signOUT(){
+  function signOUT() {
     signOut(auth)
       .then(() => {
         navigate("/");
@@ -117,7 +118,10 @@ export default function Home() {
                   <FiPlus /> Nova atividade
                 </button>
                 <CreateActivityModal open={openNewActivity} onClose={() => setOpenNewActivity(false)} />
-                <button className='btn btn-primary btn-sm'>
+                <button
+                  className='btn btn-primary btn-sm'
+                  onClick={() => generateFromUrl(activitiesG2)}
+                >
                   <FaFileExport /> Exportar para Word
                 </button>
               </div>
