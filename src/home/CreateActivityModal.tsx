@@ -21,6 +21,7 @@ export default function CreateActivityModal({
   const [imgURL, setImgURL] = useState<string>("")
   const [imgName, setImgName] = useState<string>("")
   const [loadingUpload, setLoadingUpload] = useState<boolean>(false)
+  const [description, setDescription] = useState<string>("")
   const buttonDisabled = (loadingUpload == true || name == "" || group == "" || points == "" ? true : false)
   const fileInputRef = useRef(null)
 
@@ -115,6 +116,14 @@ export default function CreateActivityModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <div>
+            <p className="text-sm font-medium text-secondary mb-2">Descrição da atividade</p>
+            <textarea 
+              className="textarea textarea-bordered w-full border-gray-200" 
+              placeholder="Descrição"
+              onChange={(e) => setDescription(e.target.value)}
+            ></textarea>
+          </div>
           <div className="flex flex-row justify-between items-center gap-10">
             <div className="w-full">
               <p className="text-sm font-medium text-secondary mb-2">Grupo</p>
