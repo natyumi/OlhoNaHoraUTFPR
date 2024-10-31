@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import logo from "../assets/Logo.svg";
-import { IoIosEyeOff, IoMdEye } from 'react-icons/io';
-import { createUserWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
-import { auth, database } from '../firebase';
-import { ref, set } from 'firebase/database';
-import { useNavigate } from 'react-router-dom';
+import { IoIosEyeOff, IoMdEye } from "react-icons/io";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth, database } from "../firebase";
+import { ref, set } from "firebase/database";
+import { useNavigate } from "react-router-dom";
+import Input from "../components/Input";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -12,31 +16,32 @@ export default function Register() {
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [course, setCourse] = useState<string>("");
-  const [logedUser, setLogedUser] = useState<User>();
-  const navigate = useNavigate()
-  const disabledButton = ((email == "" || course == "" || password == "" || name == "") ? true : false)
+  const [Ra, setRa] = useState<number>(0);
+  const navigate = useNavigate();
+  const disabledButton =
+    email == "" || course == "" || password == "" || name == "" ? true : false;
 
   async function submitUser(e: any) {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        setLogedUser(userCredential.user);
         onAuthStateChanged(auth, (user) => {
           if (user) {
-            set(ref(database, 'users/' + user.uid), {
+            set(ref(database, "users/" + user.uid), {
               name: name,
               course: course,
               email: user.email,
+              Ra: Ra,
               emailVerified: user.emailVerified,
-              token: user.refreshToken
+              token: user.refreshToken,
             });
             navigate("/");
-          } 
+          }
         });
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   }
 
   return (
@@ -46,55 +51,64 @@ export default function Register() {
           Se <span className="text-primary">cadastre</span>
         </h1>
         <div className="flex flex-col gap-4 items-center my-[14vh]">
-
-          <label className="form-control w-full max-w-96">
-            <div className="label">
-              <span className="label-text text-white">Nome <span className='text-error'>*</span></span>
-            </div>
-            <input
-              type="text"
-              placeholder="Insira seu nome"
-              className="input input-bordered"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </label>
+          <Input
+            title="Nome da atividade"
+            width="w-full max-w-96"
+            placeholder="Insira seu nome"
+            onChange={(e) => setName(e.target.value)}
+            required
+            titleColor="text-white"
+          />
 
           <label className="form-control max-w-96 w-full">
             <div className="label">
-              <span className="label-text text-white">Curso <span className='text-error'>*</span></span>
+              <span className="label-text text-white">
+                Curso <span className="text-error">*</span>
+              </span>
             </div>
-            <select className="select select-bordered" onChange={(e) => setCourse(e.target.value)}>
-              <option disabled selected>Selecione seu curso</option>
-              <option value={"Engenharia de computação"}>Engenharia de computação</option>
-              <option value={"Engenharia de software"}>Engenharia de software</option>
-              <option value={"Análise e desenvolvimento de sistemas"}>Análise e desenvolvimento de sistemas</option>
+            <select
+              className="select select-bordered select-sm"
+              onChange={(e) => setCourse(e.target.value)}
+            >
+              <option disabled selected>
+                Selecione seu curso
+              </option>
+              <option value={"Engenharia de computação"}>
+                Engenharia de computação
+              </option>
+              <option value={"Engenharia de software"}>
+                Engenharia de software
+              </option>
+              <option value={"Análise e desenvolvimento de sistemas"}>
+                Análise e desenvolvimento de sistemas
+              </option>
             </select>
           </label>
 
-          <label className="form-control w-full max-w-96">
-            <div className="label">
-              <span className="label-text text-white">Email <span className='text-error'>*</span></span>
-            </div>
-            <input
-              type="email"
-              placeholder="Insira seu email"
-              className="input input-bordered"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
+          <Input
+            title="Email"
+            width="w-full max-w-96"
+            placeholder="Insira seu email"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            titleColor="text-white"
+            type="email"
+          />
 
           <label className="form-control max-w-96 w-full">
             <div className="label">
-              <span className="label-text text-white">Senha <span className='text-error'>*</span></span>
+              <span className="label-text text-white">
+                Senha <span className="text-error">*</span>
+              </span>
             </div>
-            <div className='input input-bordered flex flex-row items-center justify-between'>
+            <div className="input input-bordered flex flex-row items-center justify-between input-sm">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Insira sua senha"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
-                className='btn btn-ghost btn-circle btn-sm'
+                className="btn btn-ghost btn-circle btn-sm"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
@@ -105,7 +119,17 @@ export default function Register() {
               </button>
             </div>
           </label>
-          <div className='max-w-96 w-full flex flex-col items-center'>
+
+          <Input
+            title="Código do aluno (R.A)"
+            width="w-full max-w-96"
+            placeholder="Insira seu R.A"
+            onChange={(e) => setRa(e.target.value)}
+            titleColor="text-white"
+            type="number"
+          />
+
+          <div className="max-w-96 w-full flex flex-col items-center">
             <button
               className="btn btn-primary max-w-96 w-full mt-6 disabled:bg-stone-600"
               onClick={submitUser}

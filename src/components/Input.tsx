@@ -1,11 +1,13 @@
 interface IInput {
   title?: string;
+  titleColor?: string;
   placeholder?: string;
   type?: string;
   width?: string;
-  value: string | number;
+  value?: string | number;
   onChange: (e: any) => void;
   required?: boolean;
+  inputSize?: string;
 }
 
 export default function Input({
@@ -16,18 +18,20 @@ export default function Input({
   onChange,
   value,
   required,
+  inputSize = "input-sm",
+  titleColor = "text-secondary"
 }: IInput) {
   return (
     <div className={`${width}`}>
       {title && (
-        <p className="text-sm font-medium text-secondary mb-2">
+        <p className={`text-sm font-medium ${titleColor} mb-2`}>
           {title} {required && <span className="text-error">*</span>}
         </p>
       )}
       <input
         type={type}
         placeholder={placeholder}
-        className={`input input-sm w-full ${width} input-bordered border-gray-200`}
+        className={`input ${inputSize} w-full ${width} input-bordered border-gray-200`}
         onChange={onChange}
         value={value}
         tabIndex={0}
