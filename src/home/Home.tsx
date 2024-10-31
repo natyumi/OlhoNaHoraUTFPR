@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { FaFileExport } from "react-icons/fa6";
 import CreateActivityModal from "./CreateActivityModal";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { database, auth } from "../firebase";
 import { onValue, ref } from "firebase/database";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import Progression from "./components/Progression";
 import ActivityTable from "./components/ActivitiesTable";
-import { useNavigate } from "react-router-dom";
 import { generateFromUrl } from "./wordData";
 
 export interface Activities {
@@ -38,17 +37,6 @@ export default function Home() {
   const [imagesArrayBuffersG3, setImagesArrayBuffersG3] = useState<
     ArrayBuffer[]
   >([]);
-  const navigate = useNavigate();
-
-  function signOUT() {
-    signOut(auth)
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   function fetchG1(userId: string) {
     onValue(ref(database, `activities/${userId}/group-1`), (snapshot) => {
