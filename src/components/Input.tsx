@@ -1,24 +1,28 @@
-interface IInput{
-  title?: string
-  placeholder?: string
-  type?: string
-  width?: string
-  value: string | number
-  onChange: (e: any) => void
+interface IInput {
+  title?: string;
+  placeholder?: string;
+  type?: string;
+  width?: string;
+  value: string | number;
+  onChange: (e: any) => void;
+  required?: boolean;
 }
 
 export default function Input({
   title,
-  placeholder="",
+  placeholder = "",
   type = "text",
   width = "w-full",
   onChange,
-  value
-} : IInput) {
-  return(
+  value,
+  required,
+}: IInput) {
+  return (
     <div className={`${width}`}>
       {title && (
-        <p className="text-sm font-medium text-secondary mb-2">{title}</p>
+        <p className="text-sm font-medium text-secondary mb-2">
+          {title} {required && <span className="text-error">*</span>}
+        </p>
       )}
       <input
         type={type}
@@ -29,5 +33,5 @@ export default function Input({
         tabIndex={0}
       />
     </div>
-  )
+  );
 }
