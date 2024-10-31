@@ -9,6 +9,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import Progression from "./components/Progression";
 import ActivityTable from "./components/ActivitiesTable";
 import { generateFromUrl } from "./wordData";
+import { useAuthStore } from "../store/auth.store";
 
 export interface Activities {
   name: string;
@@ -37,6 +38,8 @@ export default function Home() {
   const [imagesArrayBuffersG3, setImagesArrayBuffersG3] = useState<
     ArrayBuffer[]
   >([]);
+  const [loading ,setLoading] = useState<boolean>(true)
+  const authStore = useAuthStore()
 
   function fetchG1(userId: string) {
     onValue(ref(database, `activities/${userId}/group-1`), (snapshot) => {
@@ -89,6 +92,7 @@ export default function Home() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setLoading(true)
         fetchG1(user.uid);
         fetchG2(user.uid);
         fetchG3(user.uid);
@@ -114,7 +118,7 @@ export default function Home() {
     return buffers
   };
 
-  async function setG1ArrayBuffers(){
+  async function fetchG1ArrayBuffers(){
     if(activitiesG1.length > 0){
       const imageUrlsG1 = activitiesG1.map((item) => item.image);
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1)
@@ -122,7 +126,7 @@ export default function Home() {
     }
   }
 
-  async function setG2ArrayBuffers(){
+  async function fetchG2ArrayBuffers(){
     if(activitiesG2.length > 0){
       const imageUrlsG2 = activitiesG2.map((item) => item.image);
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2)
@@ -130,7 +134,7 @@ export default function Home() {
     }
   }
 
-  async function setG3ArrayBuffers(){
+  async function fetchG3ArrayBuffers(){
     if(activitiesG3.length > 0){
       const imageUrlsG3 = activitiesG3.map((item) => item.image);
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3)
@@ -139,9 +143,10 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setG1ArrayBuffers(),
-    setG2ArrayBuffers(),
-    setG3ArrayBuffers()
+    fetchG1ArrayBuffers();
+    fetchG2ArrayBuffers();
+    fetchG3ArrayBuffers();
+    setLoading(false)
   }, [activitiesG1, activitiesG2, activitiesG3]);
 
   return (
@@ -184,6 +189,7 @@ export default function Home() {
                 />
                 <button
                   className="btn btn-primary btn-sm"
+                  disabled={loading || authStore.user == null}
                   onClick={() =>
                     generateFromUrl(
                       activitiesG1,
@@ -195,6 +201,7 @@ export default function Home() {
                       allG1Points.toString(),
                       allG2Points.toString(),
                       allG3Points.toString(),
+                      authStore.user
                     )
                   }
                 >

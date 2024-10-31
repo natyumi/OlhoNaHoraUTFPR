@@ -4,9 +4,11 @@ import { IoIosSchool } from "react-icons/io";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
+import { useAuthStore } from "../store/auth.store";
 
 export default function NavBar() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const authStore = useAuthStore()
   function signOUT() {
     signOut(auth)
       .then(() => {
@@ -32,14 +34,14 @@ export default function NavBar() {
             role="button"
             className="btn btn-circle btn-secondary btn-lg font-medium"
           >
-            <span>NY</span>
+            <span>{authStore.user?.name.slice(0,1)}</span>
           </div>
           <ul
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg mt-1"
           >
             <li>
-              <p className="font-medium text-base">Natália Yumi</p>
+              <p className="font-medium text-base">{authStore.user?.name}</p>
             </li>
             <hr />
             <li className="mt-2">

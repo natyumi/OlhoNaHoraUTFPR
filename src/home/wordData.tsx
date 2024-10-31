@@ -7,11 +7,10 @@ import {
   TableCell,
   TableRow,
   TextRun,
-  WidthType,
 } from "docx";
 import { saveAs } from "file-saver";
 import { Activities } from "./Home";
-import { useEffect, useState } from "react";
+import { AuthUser } from "../store/auth.store";
 
 export async function generateFromUrl(
   activitiesG1: Activities[],
@@ -22,7 +21,8 @@ export async function generateFromUrl(
   imagesArrayBuffersG3: ArrayBuffer[],
   allG1Points: string,
   allG2Points: string,
-  allG3Points: string
+  allG3Points: string,
+  user: AuthUser | null
 ) {
   const tablesG1 = activitiesG1.flatMap((item, index) => [
     new Table({
@@ -291,7 +291,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
               new TextRun({
-                text: "Natália Yumi",
+                text: `${user?.name}`,
                 size: 22,
                 font: "Arial",
               }),
@@ -306,7 +306,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
               new TextRun({
-                text: "Engenharia de Computação",
+                text: `${user?.course}`,
                 size: 22,
                 font: "Arial",
               }),
@@ -321,7 +321,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
               new TextRun({
-                text: "natcam.2019@alunos.utfpr.edu.br",
+                text: `${user?.email}`,
                 size: 22,
                 font: "Arial",
               }),
@@ -336,7 +336,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
               new TextRun({
-                text: "2142660",
+                text: `${user?.Ra ? user?.Ra : ""}`,
                 size: 22,
                 font: "Arial",
               }),

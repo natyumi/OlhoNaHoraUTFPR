@@ -1,27 +1,43 @@
 import { useState } from 'react';
 import logo from "../assets/Logo.svg";
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, database } from '../firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { onValue, ref } from 'firebase/database';
+import { useAuthStore } from '../store/auth.store';
 
 export default function LogIn() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const disabledButton = ((email == "" || password == "") ? true : false);
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [error, setError] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+  const disabledButton = ((email == "" || password == "") ? true : false)
   const navigate = useNavigate()
+  const authStore = useAuthStore()
 
   function logIn() {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigate("/home");
+        fetchUser()
+        navigate("/home")
       })
       .catch((error) => {
         setError(error.message)
       })
-    setLoading(false);
+    setLoading(false)
+  }
+
+  function fetchUser(){
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        onValue(ref(database, `users/${user.uid}`), (snapshot) => {
+          if (snapshot.exists()) {
+            authStore.setUser(snapshot.val())
+          }
+        });
+      }
+    })
   }
 
   return (
