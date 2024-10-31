@@ -203,7 +203,10 @@ export default function Home() {
                       activitiesG3,
                       imagesArrayBuffersG1,
                       imagesArrayBuffersG2,
-                      imagesArrayBuffersG3
+                      imagesArrayBuffersG3,
+                      allG1Points.toString(),
+                      allG2Points.toString(),
+                      allG3Points.toString(),
                     )
                   }
                 >

@@ -19,9 +19,11 @@ export async function generateFromUrl(
   activitiesG3: Activities[],
   imagesArrayBuffersG1: ArrayBuffer[],
   imagesArrayBuffersG2: ArrayBuffer[],
-  imagesArrayBuffersG3: ArrayBuffer[]
+  imagesArrayBuffersG3: ArrayBuffer[],
+  allG1Points: string,
+  allG2Points: string,
+  allG3Points: string
 ) {
-
   const tablesG1 = activitiesG1.flatMap((item, index) => [
     new Table({
       rows: [
@@ -179,51 +181,45 @@ export async function generateFromUrl(
   ]);
 
   const imagesG1 = imagesArrayBuffersG1.flatMap((item, index) => {
-    return(
-      [
-        new Paragraph({
-          children: [
-            new ImageRun({
-              data: item,
-              transformation: { width: 150, height: 150 },
-              type: "png", // Tipo da imagem
-            }),
-          ],
-        }),
-      ]
-    )
+    return [
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: item,
+            transformation: { width: 150, height: 150 },
+            type: "png", // Tipo da imagem
+          }),
+        ],
+      }),
+    ];
   });
 
   const imagesG2 = imagesArrayBuffersG2.flatMap((item, index) => {
-    return(
-      [
-        new Paragraph({
-          children: [
-            new ImageRun({
-              data: item,
-              transformation: { width: 150, height: 150 },
-              type: "png", // Tipo da imagem
-            }),
-          ],
-        }),
-      ]
-    )
+    return [
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: item,
+            transformation: { width: 150, height: 150 },
+            type: "png", // Tipo da imagem
+          }),
+        ],
+      }),
+    ];
   });
 
   const imagesG3 = imagesArrayBuffersG3.flatMap((item, index) => {
-    return(
-      [
-        new Paragraph({
-          children: [
-            new ImageRun({
-              data: item,
-              transformation: { width: 150, height: 150 },
-              type: "png", // Tipo da imagem
-            }),
-          ],
-        }),
-      ]
-    )
+    return [
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: item,
+            transformation: { width: 150, height: 150 },
+            type: "png", // Tipo da imagem
+          }),
+        ],
+      }),
+    ];
   });
 
   const doc = new Document({
@@ -273,13 +269,7 @@ export async function generateFromUrl(
               }),
             ],
             alignment: "center",
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: "",
-              }),
-            ],
+            spacing: { after: 300 },
           }),
           new Paragraph({
             children: [
@@ -291,13 +281,7 @@ export async function generateFromUrl(
               }),
             ],
             alignment: "center",
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: "",
-              }),
-            ],
+            spacing: { after: 300 },
           }),
           new Paragraph({
             children: [
@@ -372,9 +356,8 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
             ],
-            spacing: { after: 200 },
+            spacing: { after: 300 },
           }),
-          new Paragraph({ text: "" }),
           new Paragraph({
             children: [
               new TextRun({
@@ -384,13 +367,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
             ],
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: "",
-              }),
-            ],
+            spacing: { after: 200 },
           }),
           ...tablesG1,
           new Paragraph({
@@ -402,13 +379,7 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
             ],
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: "",
-              }),
-            ],
+            spacing: { after: 200 },
           }),
           ...tablesG2,
           new Paragraph({
@@ -420,18 +391,103 @@ export async function generateFromUrl(
                 font: "Arial",
               }),
             ],
+            spacing: { after: 200 },
+          }),
+          ...tablesG3,
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Total de pontos",
+                bold: true,
+                size: 24,
+                font: "Arial",
+              }),
+            ],
+            spacing: { after: 200 },
+          }),
+          new Table({
+            rows: [
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [new Paragraph(`Grupo 1`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(`Grupo 2`)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(`Grupo 3`)],
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [new Paragraph(allG1Points)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(allG2Points)],
+                  }),
+                  new TableCell({
+                    children: [new Paragraph(allG3Points)],
+                  }),
+                ],
+              }),
+            ],
+            columnWidths: [2000, 2000, 2000],
+          }),
+        ],
+      },
+      {
+        children: [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Certificados",
+                bold: true,
+                size: 30,
+                font: "Arial",
+              }),
+            ],
+            alignment: "center",
+            spacing: { after: 300, before: 300 },
           }),
           new Paragraph({
             children: [
               new TextRun({
-                text: "",
+                text: "Grupo 1",
+                bold: true,
+                size: 24,
+                font: "Arial",
               }),
             ],
+            spacing: { after: 200 },
           }),
-          ...tablesG3,
           ...imagesG1,
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Grupo 2",
+                bold: true,
+                size: 24,
+                font: "Arial",
+              }),
+            ],
+            spacing: { after: 200 },
+          }),
           ...imagesG2,
-          ...imagesG3
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Grupo 3",
+                bold: true,
+                size: 24,
+                font: "Arial",
+              }),
+            ],
+            spacing: { after: 200 },
+          }),
+          ...imagesG3,
         ],
       },
     ],
