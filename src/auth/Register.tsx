@@ -58,6 +58,7 @@ export default function Register() {
             onChange={(e) => setName(e.target.value)}
             required
             titleColor="text-white"
+            inputSize="input-md"
           />
 
           <label className="form-control max-w-96 w-full">
@@ -67,7 +68,7 @@ export default function Register() {
               </span>
             </div>
             <select
-              className="select select-bordered select-sm"
+              className="select select-bordered"
               onChange={(e) => setCourse(e.target.value)}
             >
               <option disabled selected>
@@ -93,6 +94,7 @@ export default function Register() {
             required
             titleColor="text-white"
             type="email"
+            inputSize="input-md"
           />
 
           <label className="form-control max-w-96 w-full">
@@ -101,7 +103,7 @@ export default function Register() {
                 Senha <span className="text-error">*</span>
               </span>
             </div>
-            <div className="input input-bordered flex flex-row items-center justify-between input-sm">
+            <div className="input input-bordered flex flex-row items-center justify-between">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Insira sua senha"
@@ -127,6 +129,7 @@ export default function Register() {
             onChange={(e) => setRa(e.target.value)}
             titleColor="text-white"
             type="number"
+            inputSize="input-md"
           />
 
           <div className="max-w-96 w-full flex flex-col items-center">
