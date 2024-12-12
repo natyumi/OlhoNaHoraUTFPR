@@ -33,7 +33,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Nome da atividade: ${item.name}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Início: ")],
+              children: [new Paragraph(`Início: ${item.start}`)],
             }),
           ],
         }),
@@ -43,7 +43,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Pontos: ${item.points.toString()}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Término: ")],
+              children: [new Paragraph(`Término: ${item.end}`)],
             }),
           ],
         }),
@@ -53,14 +53,14 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph("Duração: ")],
+              children: [new Paragraph(`Duration: ${item.duration}`)],
             }),
           ],
         }),
         new TableRow({
           children: [
             new TableCell({
-              children: [new Paragraph("Descrição: ")],
+              children: [new Paragraph(`Descrição: ${item.description}`)],
             }),
           ],
         }),
@@ -85,7 +85,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Nome da atividade: ${item.name}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Início: ")],
+              children: [new Paragraph(`Início: ${item.start}`)],
             }),
           ],
         }),
@@ -95,7 +95,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Pontos: ${item.points.toString()}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Término: ")],
+              children: [new Paragraph(`Término: ${item.end}`)],
             }),
           ],
         }),
@@ -105,14 +105,14 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph("Duração: ")],
+              children: [new Paragraph(`Duration: ${item.duration}`)],
             }),
           ],
         }),
         new TableRow({
           children: [
             new TableCell({
-              children: [new Paragraph("Descrição: ")],
+              children: [new Paragraph(`Descrição: ${item.description}`)],
             }),
           ],
         }),
@@ -137,7 +137,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Nome da atividade: ${item.name}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Início: ")],
+              children: [new Paragraph(`Início: ${item.start}`)],
             }),
           ],
         }),
@@ -147,7 +147,7 @@ export async function generateFromUrl(
               children: [new Paragraph(`Pontos: ${item.points.toString()}`)],
             }),
             new TableCell({
-              children: [new Paragraph("Término: ")],
+              children: [new Paragraph(`Término: ${item.end}`)],
             }),
           ],
         }),
@@ -157,14 +157,14 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph("Duração: ")],
+              children: [new Paragraph(`Duration: ${item.duration}`)],
             }),
           ],
         }),
         new TableRow({
           children: [
             new TableCell({
-              children: [new Paragraph("Descrição: ")],
+              children: [new Paragraph(`Descrição: ${item.description}`)],
             }),
           ],
         }),
@@ -186,7 +186,7 @@ export async function generateFromUrl(
         children: [
           new ImageRun({
             data: item,
-            transformation: { width: 150, height: 150 },
+            transformation: { width: 650, height: 400 },
             type: "png", // Tipo da imagem
           }),
         ],
@@ -200,7 +200,7 @@ export async function generateFromUrl(
         children: [
           new ImageRun({
             data: item,
-            transformation: { width: 150, height: 150 },
+            transformation: { width: 650, height: 400 },
             type: "png", // Tipo da imagem
           }),
         ],
@@ -214,7 +214,7 @@ export async function generateFromUrl(
         children: [
           new ImageRun({
             data: item,
-            transformation: { width: 150, height: 150 },
+            transformation: { width: 650, height: 400 },
             type: "png", // Tipo da imagem
           }),
         ],
