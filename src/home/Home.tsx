@@ -16,6 +16,9 @@ export interface Activities {
   group: string;
   points: number;
   description?: string;
+  start?: string;
+  end?: string;
+  duration?: string;
   image: string;
   id: string;
   imageBuffer: ArrayBuffer;
@@ -38,8 +41,8 @@ export default function Home() {
   const [imagesArrayBuffersG3, setImagesArrayBuffersG3] = useState<
     ArrayBuffer[]
   >([]);
-  const [loading ,setLoading] = useState<boolean>(true)
-  const authStore = useAuthStore()
+  const [loading, setLoading] = useState<boolean>(true);
+  const authStore = useAuthStore();
 
   function fetchG1(userId: string) {
     onValue(ref(database, `activities/${userId}/group-1`), (snapshot) => {
@@ -92,7 +95,7 @@ export default function Home() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setLoading(true)
+        setLoading(true);
         fetchG1(user.uid);
         fetchG2(user.uid);
         fetchG3(user.uid);
@@ -115,30 +118,30 @@ export default function Home() {
         console.error("Erro ao buscar ou converter a imagem:", error);
       }
     }
-    return buffers
+    return buffers;
   };
 
-  async function fetchG1ArrayBuffers(){
-    if(activitiesG1.length > 0){
+  async function fetchG1ArrayBuffers() {
+    if (activitiesG1.length > 0) {
       const imageUrlsG1 = activitiesG1.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1)
-      setImagesArrayBuffersG1(buffers)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1);
+      setImagesArrayBuffersG1(buffers);
     }
   }
 
-  async function fetchG2ArrayBuffers(){
-    if(activitiesG2.length > 0){
+  async function fetchG2ArrayBuffers() {
+    if (activitiesG2.length > 0) {
       const imageUrlsG2 = activitiesG2.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2)
-      setImagesArrayBuffersG2(buffers)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2);
+      setImagesArrayBuffersG2(buffers);
     }
   }
 
-  async function fetchG3ArrayBuffers(){
-    if(activitiesG3.length > 0){
+  async function fetchG3ArrayBuffers() {
+    if (activitiesG3.length > 0) {
       const imageUrlsG3 = activitiesG3.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3)
-      setImagesArrayBuffersG3(buffers)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3);
+      setImagesArrayBuffersG3(buffers);
     }
   }
 
@@ -146,7 +149,7 @@ export default function Home() {
     fetchG1ArrayBuffers();
     fetchG2ArrayBuffers();
     fetchG3ArrayBuffers();
-    setLoading(false)
+    setLoading(false);
   }, [activitiesG1, activitiesG2, activitiesG3]);
 
   return (
