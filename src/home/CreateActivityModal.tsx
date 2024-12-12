@@ -1,11 +1,7 @@
 import { IoMdClose } from "react-icons/io";
 import Input from "../components/Input";
 import { useRef, useState } from "react";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import {
   child,
   push,
@@ -30,9 +26,11 @@ export default function CreateActivityModal({
   const [points, setPoints] = useState<string>("");
   const [imgURL, setImgURL] = useState<string>("");
   const [imgName, setImgName] = useState<string>("");
-  const [imgBuffer, setImgBuffer] = useState<any>()
-  const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
+  const [start, setStart] = useState<string>("");
+  const [end, setEnd] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+  const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
   const buttonDisabled =
     loadingUpload == true || name == "" || group == "" || points == ""
       ? true
@@ -88,6 +86,9 @@ export default function CreateActivityModal({
           group: group,
           points: points,
           description: description,
+          start: start,
+          end: end,
+          duration: duration,
           image: imgURL,
           id: newActivityKey,
         };
@@ -131,7 +132,6 @@ export default function CreateActivityModal({
           <Input
             title="Nome da atividade"
             placeholder="Insira o nome da atividade"
-            value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
@@ -144,6 +144,23 @@ export default function CreateActivityModal({
               placeholder="Descrição"
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+          </div>
+          <div className="flex flex-row gap-4">
+            <Input
+              title="Início"
+              placeholder="Ex.: 14/08/2021"
+              onChange={(e) => setStart(e.target.value)}
+            />
+            <Input
+              title="Término"
+              placeholder="Ex.: 15/08/2021"
+              onChange={(e) => setEnd(e.target.value)}
+            />
+            <Input
+              title="Duração"
+              placeholder="Ex.: 12 horas"
+              onChange={(e) => setDuration(e.target.value)}
+            />
           </div>
           <div className="flex flex-row justify-between items-center gap-10">
             <div className="w-full">
@@ -168,7 +185,6 @@ export default function CreateActivityModal({
               title="Pontos"
               type="number"
               width="w-20"
-              value={points}
               onChange={(e) => setPoints(e.target.value)}
               required
             />
@@ -176,7 +192,7 @@ export default function CreateActivityModal({
 
           <div>
             <p className="text-sm font-medium text-secondary mb-2">
-              Arquivo comprobatório <span className="text-error">*</span>
+              Arquivo comprobatório (png) <span className="text-error">*</span>
             </p>
             <div className="flex flex-row gap-2 w-full">
               <input
@@ -184,7 +200,7 @@ export default function CreateActivityModal({
                 className="hidden"
                 onChange={uploadImage}
                 ref={fileInputRef}
-                // accept="image/* , video/*"
+                accept="image/png"
               />
               <button
                 className="btn btn-sm btn-circle bg-gray-300 border-none hover:bg-gray-300"
@@ -203,16 +219,9 @@ export default function CreateActivityModal({
                 type="text"
                 width="w-full"
                 placeholder="Selecione um arquivo"
-                value={imgName}
                 onChange={(e) => uploadImage(e)}
               />
             </div>
-            {/* <input
-              className="border rounded file:bg-primary file:text-white file:border-none pr-2 text-sm"
-              type="file"
-              id="list-form-file"
-              onChange={(e) => uploadImage(e)}
-            /> */}
           </div>
         </div>
         <div className="flex justify-end mt-6">
