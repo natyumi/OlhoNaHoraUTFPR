@@ -52,7 +52,7 @@ export default function Register() {
         </h1>
         <div className="flex flex-col gap-4 items-center my-[14vh]">
           <Input
-            title="Nome da atividade"
+            title="Nome completo"
             width="w-full max-w-96"
             placeholder="Insira seu nome"
             onChange={(e) => setName(e.target.value)}
