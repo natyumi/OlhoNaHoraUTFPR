@@ -14,7 +14,7 @@ module.exports = {
           primary: "#FFD100",
           secondary: "#202020",
           neutral: "#FFF6CC",
-          error: "#EF233C",
+          error: "#ff7477",
           '.input:focus': {
             outline: 0,
           },
