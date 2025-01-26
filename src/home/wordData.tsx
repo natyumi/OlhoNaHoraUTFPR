@@ -53,7 +53,7 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph(`Duration: ${item.duration}`)],
+              children: [new Paragraph(`Duração: ${item.duration}`)],
             }),
           ],
         }),
@@ -105,7 +105,7 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph(`Duration: ${item.duration}`)],
+              children: [new Paragraph(`Duração: ${item.duration}`)],
             }),
           ],
         }),
@@ -157,7 +157,7 @@ export async function generateFromUrl(
               children: [new Paragraph("Grupo: 2")],
             }),
             new TableCell({
-              children: [new Paragraph(`Duration: ${item.duration}`)],
+              children: [new Paragraph(`Duração: ${item.duration}`)],
             }),
           ],
         }),
