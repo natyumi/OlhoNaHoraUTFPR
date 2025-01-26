@@ -1,156 +1,156 @@
-import { useEffect, useState } from "react";
-import { FiPlus } from "react-icons/fi";
-import { FaFileExport } from "react-icons/fa6";
-import CreateActivityModal from "./CreateActivityModal";
-import { onAuthStateChanged } from "firebase/auth";
-import { database, auth } from "../firebase";
-import { onValue, ref } from "firebase/database";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import Progression from "./components/Progression";
-import ActivityTable from "./components/ActivitiesTable";
-import { generateFromUrl } from "./wordData";
-import { useAuthStore } from "../store/auth.store";
+import { useEffect, useState } from 'react'
+import { FiPlus } from 'react-icons/fi'
+import { FaFileExport } from 'react-icons/fa6'
+import CreateActivityModal from './CreateActivityModal'
+import { onAuthStateChanged } from 'firebase/auth'
+import { database, auth } from '../firebase'
+import { onValue, ref } from 'firebase/database'
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import Progression from './components/Progression'
+import ActivityTable from './components/ActivitiesTable'
+import { generateFromUrl } from './wordData'
+import { useAuthStore } from '../store/auth.store'
 
 export interface Activities {
-  name: string;
-  group: string;
-  points: number;
-  description?: string;
-  start?: string;
-  end?: string;
-  duration?: string;
-  image: string;
-  id: string;
-  imageBuffer: ArrayBuffer;
+  name: string
+  group: string
+  points: number
+  description?: string
+  start?: string
+  end?: string
+  duration?: string
+  image: string
+  id: string
+  imageBuffer: ArrayBuffer
 }
 
 export default function Home() {
-  const [openNewActivity, setOpenNewActivity] = useState<boolean>(false);
-  const [allG1Points, setAllG1Points] = useState<number>(0);
-  const [allG2Points, setAllG2Points] = useState<number>(0);
-  const [allG3Points, setAllG3Points] = useState<number>(0);
-  const [activitiesG1, setActivitiesG1] = useState<Activities[]>([]);
-  const [activitiesG2, setActivitiesG2] = useState<Activities[]>([]);
-  const [activitiesG3, setActivitiesG3] = useState<Activities[]>([]);
+  const [openNewActivity, setOpenNewActivity] = useState<boolean>(false)
+  const [allG1Points, setAllG1Points] = useState<number>(0)
+  const [allG2Points, setAllG2Points] = useState<number>(0)
+  const [allG3Points, setAllG3Points] = useState<number>(0)
+  const [activitiesG1, setActivitiesG1] = useState<Activities[]>([])
+  const [activitiesG2, setActivitiesG2] = useState<Activities[]>([])
+  const [activitiesG3, setActivitiesG3] = useState<Activities[]>([])
   const [imagesArrayBuffersG1, setImagesArrayBuffersG1] = useState<
     ArrayBuffer[]
-  >([]);
+  >([])
   const [imagesArrayBuffersG2, setImagesArrayBuffersG2] = useState<
     ArrayBuffer[]
-  >([]);
+  >([])
   const [imagesArrayBuffersG3, setImagesArrayBuffersG3] = useState<
     ArrayBuffer[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const authStore = useAuthStore();
+  >([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const authStore = useAuthStore()
 
   function fetchG1(userId: string) {
     onValue(ref(database, `activities/${userId}/group-1`), (snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != "points") {
-            const data = snapshotItem.val();
-            setActivitiesG1([...activitiesG1, data]);
+          if (snapshotItem.key != 'points') {
+            const data = snapshotItem.val()
+            setActivitiesG1([...activitiesG1, data])
           } else {
-            const pointsData = snapshotItem.val().points;
-            setAllG1Points(pointsData);
+            const pointsData = snapshotItem.val().points
+            setAllG1Points(pointsData)
           }
-        });
+        })
       }
-    });
+    })
   }
 
   function fetchG2(userId: string) {
     onValue(ref(database, `activities/${userId}/group-2`), (snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != "points") {
-            const data = snapshotItem.val();
-            setActivitiesG2([...activitiesG2, data]);
+          if (snapshotItem.key != 'points') {
+            const data = snapshotItem.val()
+            setActivitiesG2([...activitiesG2, data])
           } else {
-            const pointsData = snapshotItem.val().points;
-            setAllG2Points(pointsData);
+            const pointsData = snapshotItem.val().points
+            setAllG2Points(pointsData)
           }
-        });
+        })
       }
-    });
+    })
   }
 
   function fetchG3(userId: string) {
     onValue(ref(database, `activities/${userId}/group-3`), (snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != "points") {
-            const data = snapshotItem.val();
-            setActivitiesG3([...activitiesG1, data]);
+          if (snapshotItem.key != 'points') {
+            const data = snapshotItem.val()
+            setActivitiesG3([...activitiesG1, data])
           } else {
-            const pointsData = snapshotItem.val().points;
-            setAllG3Points(pointsData);
+            const pointsData = snapshotItem.val().points
+            setAllG3Points(pointsData)
           }
-        });
+        })
       }
-    });
+    })
   }
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoading(true);
-        fetchG1(user.uid);
-        fetchG2(user.uid);
-        fetchG3(user.uid);
-      }
-    });
-  }, []);
-
   const fetchImagesAsArrayBuffers = async (urls: string[]) => {
-    const buffers = [];
+    const buffers = []
 
     for (const url of urls) {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url)
         if (!response.ok) {
-          throw new Error(`Erro ao buscar a imagem: ${response.statusText}`);
+          throw new Error(`Erro ao buscar a imagem: ${response.statusText}`)
         }
-        const arrayBuffer = await response.arrayBuffer();
-        buffers.push(arrayBuffer);
+        const arrayBuffer = await response.arrayBuffer()
+        buffers.push(arrayBuffer)
       } catch (error) {
-        console.error("Erro ao buscar ou converter a imagem:", error);
+        console.error('Erro ao buscar ou converter a imagem:', error)
       }
     }
-    return buffers;
-  };
+    return buffers
+  }
 
   async function fetchG1ArrayBuffers() {
     if (activitiesG1.length > 0) {
-      const imageUrlsG1 = activitiesG1.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1);
-      setImagesArrayBuffersG1(buffers);
+      const imageUrlsG1 = activitiesG1.map((item) => item.image)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1)
+      setImagesArrayBuffersG1(buffers)
     }
   }
 
   async function fetchG2ArrayBuffers() {
     if (activitiesG2.length > 0) {
-      const imageUrlsG2 = activitiesG2.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2);
-      setImagesArrayBuffersG2(buffers);
+      const imageUrlsG2 = activitiesG2.map((item) => item.image)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2)
+      setImagesArrayBuffersG2(buffers)
     }
   }
 
   async function fetchG3ArrayBuffers() {
     if (activitiesG3.length > 0) {
-      const imageUrlsG3 = activitiesG3.map((item) => item.image);
-      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3);
-      setImagesArrayBuffersG3(buffers);
+      const imageUrlsG3 = activitiesG3.map((item) => item.image)
+      const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3)
+      setImagesArrayBuffersG3(buffers)
     }
   }
 
   useEffect(() => {
-    fetchG1ArrayBuffers();
-    fetchG2ArrayBuffers();
-    fetchG3ArrayBuffers();
-    setLoading(false);
-  }, [activitiesG1, activitiesG2, activitiesG3]);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoading(true)
+        fetchG1(user.uid)
+        fetchG2(user.uid)
+        fetchG3(user.uid)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    fetchG1ArrayBuffers()
+    fetchG2ArrayBuffers()
+    fetchG3ArrayBuffers()
+    setLoading(false)
+  }, [activitiesG1, activitiesG2, activitiesG3])
 
   return (
     <div className="flex flex-row p-10 bg-primary h-[100vh] bg-opacity-10">
@@ -213,23 +213,40 @@ export default function Home() {
               </div>
             </div>
             <hr />
-            <ActivitiesCollapse activities={activitiesG1} title="Grupo 1" />
-            <ActivitiesCollapse activities={activitiesG2} title="Grupo 2" />
-            <ActivitiesCollapse activities={activitiesG3} title="Grupo 3" />
+            <ActivitiesCollapse
+              activities={activitiesG1}
+              title="Grupo 1"
+              fetchActivities={fetchG1}
+            />
+            <ActivitiesCollapse
+              activities={activitiesG2}
+              title="Grupo 2"
+              fetchActivities={fetchG2}
+            />
+            <ActivitiesCollapse
+              activities={activitiesG3}
+              title="Grupo 3"
+              fetchActivities={fetchG3}
+            />
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface IActivitiesCollapse {
-  title: string;
-  activities: Activities[];
+  title: string
+  activities: Activities[]
+  fetchActivities: (userId: string) => void
 }
 
-function ActivitiesCollapse({ activities, title }: IActivitiesCollapse) {
-  const [collapsed, setCollapsed] = useState<boolean>(true);
+function ActivitiesCollapse({
+  activities,
+  title,
+  fetchActivities,
+}: IActivitiesCollapse) {
+  const [collapsed, setCollapsed] = useState<boolean>(true)
   return (
     <div className="collapse">
       <input type="checkbox" onChange={() => setCollapsed(!collapsed)} />
@@ -244,8 +261,11 @@ function ActivitiesCollapse({ activities, title }: IActivitiesCollapse) {
         </p>
       </div>
       <div className="collapse-content px-8">
-        <ActivityTable activities={activities} />
+        <ActivityTable
+          activities={activities}
+          fetchActivities={fetchActivities}
+        />
       </div>
     </div>
-  );
+  )
 }
