@@ -1,14 +1,14 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import LogIn from "./auth/LogIn";
-import Home from "./home/Home";
-import { useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, database } from "./firebase";
-import Register from "./auth/Register";
-import ForgotPassword from "./auth/ForgotPassword";
-import NavBar from "./components/NavBar";
-import { onValue, ref } from "firebase/database";
-import { useAuthStore } from "./store/auth.store";
+import { Route, Routes, useNavigate } from 'react-router-dom'
+import LogIn from './auth/LogIn'
+import Home from './home/Home'
+import { useEffect } from 'react'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth, database } from './firebase'
+import Register from './auth/Register'
+import ForgotPassword from './auth/ForgotPassword'
+import NavBar from './components/NavBar'
+import { onValue, ref } from 'firebase/database'
+import { useAuthStore } from './store/auth.store'
 
 export default function MainRoutes() {
   const navigate = useNavigate()
@@ -17,17 +17,18 @@ export default function MainRoutes() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        onValue(ref(database, `users/${user.uid}`), (snapshot) => {
+        const userUID = user.uid
+        onValue(ref(database, `users/${userUID}`), (snapshot) => {
           if (snapshot.exists()) {
-            authStore.setUser(snapshot.val());
+            authStore.setUser(snapshot.val())
+            navigate('/home')
           }
-        });
-        return navigate("/home");
+        })
       } else {
-        return navigate("/");
+        navigate('/')
       }
-    });
-  }, []);
+    })
+  }, [])
 
   return (
     <Routes>
@@ -36,11 +37,11 @@ export default function MainRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
-  );
+  )
 }
 
 interface ICreateHomeElement {
-  route: React.ReactNode;
+  route: React.ReactNode
 }
 function CreateHomeElement({ route }: ICreateHomeElement) {
   return (
@@ -48,5 +49,5 @@ function CreateHomeElement({ route }: ICreateHomeElement) {
       <NavBar />
       {route}
     </>
-  );
+  )
 }

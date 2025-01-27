@@ -1,47 +1,43 @@
-import { useState } from "react";
-import logo from "../assets/Logo.svg";
-import { IoIosEyeOff, IoMdEye } from "react-icons/io";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { auth, database } from "../firebase";
-import { ref, set } from "firebase/database";
-import { useNavigate } from "react-router-dom";
-import Input from "../components/Input";
+import { useState } from 'react'
+import logo from '../assets/Logo.svg'
+import { IoIosEyeOff, IoMdEye } from 'react-icons/io'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth, database } from '../firebase'
+import { ref, set } from 'firebase/database'
+import { useNavigate } from 'react-router-dom'
+import Input from '../components/Input'
 
 export default function Register() {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [course, setCourse] = useState<string>("");
-  const [Ra, setRa] = useState<number>(0);
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [name, setName] = useState<string>('')
+  const [course, setCourse] = useState<string>('')
+  const [Ra, setRa] = useState<number>(0)
+  const navigate = useNavigate()
   const disabledButton =
-    email == "" || course == "" || password == "" || name == "" ? true : false;
+    email == '' || course == '' || password == '' || name == '' || Ra == 0
 
   async function submitUser(e: any) {
-    e.preventDefault();
+    e.preventDefault()
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            set(ref(database, "users/" + user.uid), {
-              name: name,
-              course: course,
-              email: user.email,
-              Ra: Ra,
-              emailVerified: user.emailVerified,
-              token: user.refreshToken,
-            });
-            navigate("/");
-          }
-        });
+        const userUID = userCredential.user.uid
+        const user = userCredential.user
+        set(ref(database, 'users/' + userUID), {
+          name: name,
+          course: course,
+          email: user.email,
+          Ra: Ra,
+          emailVerified: user.emailVerified,
+          token: user.refreshToken,
+          uid: userUID,
+        })
+        navigate('/')
       })
       .catch((error) => {
-        console.log(error);
-      });
+        console.log(error)
+      })
   }
 
   return (
@@ -74,14 +70,11 @@ export default function Register() {
               <option disabled selected>
                 Selecione seu curso
               </option>
-              <option value={"Engenharia de computação"}>
+              <option value={'Engenharia de computação'}>
                 Engenharia de computação
               </option>
-              <option value={"Engenharia de software"}>
+              <option value={'Engenharia de software'}>
                 Engenharia de software
-              </option>
-              <option value={"Análise e desenvolvimento de sistemas"}>
-                Análise e desenvolvimento de sistemas
               </option>
             </select>
           </label>
@@ -105,7 +98,7 @@ export default function Register() {
             </div>
             <div className="input input-bordered flex flex-row items-center justify-between">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Insira sua senha"
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -130,6 +123,7 @@ export default function Register() {
             titleColor="text-white"
             type="number"
             inputSize="input-md"
+            required
           />
 
           <div className="max-w-96 w-full flex flex-col items-center">
@@ -144,7 +138,7 @@ export default function Register() {
               Já possui uma conta?
               <button
                 className="btn btn-ghost text-primary p-1 hover:underline"
-                onClick={() => navigate("/")}
+                onClick={() => navigate('/')}
               >
                 Entre!
               </button>
@@ -163,5 +157,5 @@ export default function Register() {
         </div>
       </div>
     </div>
-  );
+  )
 }

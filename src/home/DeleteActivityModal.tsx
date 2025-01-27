@@ -3,8 +3,9 @@ import { Activities } from "./Home";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, database } from "../firebase";
 import { increment, ref, remove, update } from "firebase/database";
+import { useAuthStore } from "../store/auth.store";
 
-interface ICreateActivityModal {
+interface IDeleteActivityModal {
   open: boolean;
   onClose: () => void;
   activity: Activities;
@@ -15,7 +16,9 @@ export default function DeleteActivityModal({
   onClose,
   activity,
   fetchActivities,
-}: ICreateActivityModal) {
+}: IDeleteActivityModal) {
+
+  const authStore = useAuthStore()
 
   function deleteActivity() {
     onAuthStateChanged(auth, (user) => {

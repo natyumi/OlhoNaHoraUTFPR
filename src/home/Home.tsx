@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
 import { FiPlus } from 'react-icons/fi'
 import { FaFileExport } from 'react-icons/fa6'
-import CreateActivityModal from './CreateActivityModal'
-import { onAuthStateChanged } from 'firebase/auth'
-import { database, auth } from '../firebase'
+import { database } from '../firebase'
 import { onValue, ref } from 'firebase/database'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import Progression from './components/Progression'
 import ActivityTable from './components/ActivitiesTable'
 import { generateFromUrl } from './wordData'
 import { useAuthStore } from '../store/auth.store'
+import CreateEditActivityModal from './CreateEditActivityModal'
 
 export interface Activities {
   name: string
   group: string
-  points: number
-  description?: string
+  points: string
+  description: string
   start?: string
   end?: string
   duration?: string
   image: string
+  imageName: string
   id: string
   imageBuffer: ArrayBuffer
 }
@@ -43,52 +43,70 @@ export default function Home() {
   >([])
   const [loading, setLoading] = useState<boolean>(true)
   const authStore = useAuthStore()
+  const userUID = authStore.user?.id
 
-  function fetchG1(userId: string) {
-    onValue(ref(database, `activities/${userId}/group-1`), (snapshot) => {
+  function disableWordButton() {
+    if (loading) return true
+    if (userUID == undefined) return true
+    if (
+      activitiesG1.length == 0 &&
+      activitiesG2.length == 0 &&
+      activitiesG3.length == 0
+    )
+      return true
+  }
+
+  function fetchG1() {
+    onValue(ref(database, `activities/${userUID}/group-1`), (snapshot) => {
+      console.log(userUID)
       if (snapshot.exists()) {
+        const newActivities: Activities[] = []
         snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != 'points') {
+          if (snapshotItem.key !== 'points') {
             const data = snapshotItem.val()
-            setActivitiesG1([...activitiesG1, data])
+            newActivities.push(data)
           } else {
             const pointsData = snapshotItem.val().points
             setAllG1Points(pointsData)
           }
         })
+        setActivitiesG1(newActivities)
+        fetchG1ArrayBuffers(newActivities)
       }
     })
   }
 
-  function fetchG2(userId: string) {
-    onValue(ref(database, `activities/${userId}/group-2`), (snapshot) => {
-      if (snapshot.exists()) {
-        snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != 'points') {
-            const data = snapshotItem.val()
-            setActivitiesG2([...activitiesG2, data])
-          } else {
-            const pointsData = snapshotItem.val().points
-            setAllG2Points(pointsData)
-          }
-        })
-      }
+  function fetchG2() {
+    onValue(ref(database, `activities/${userUID}/group-2`), (snapshot) => {
+      const newActivities: Activities[] = []
+      snapshot.forEach((snapshotItem) => {
+        if (snapshotItem.key !== 'points') {
+          const data = snapshotItem.val()
+          newActivities.push(data)
+        } else {
+          const pointsData = snapshotItem.val().points
+          setAllG2Points(pointsData)
+        }
+      })
+      setActivitiesG2(newActivities)
+      fetchG2ArrayBuffers(newActivities)
     })
   }
 
-  function fetchG3(userId: string) {
-    onValue(ref(database, `activities/${userId}/group-3`), (snapshot) => {
-      if (snapshot.exists()) {
-        snapshot.forEach((snapshotItem) => {
-          if (snapshotItem.key != 'points') {
-            const data = snapshotItem.val()
-            setActivitiesG3([...activitiesG1, data])
-          } else {
-            const pointsData = snapshotItem.val().points
-            setAllG3Points(pointsData)
-          }
-        })
-      }
+  function fetchG3() {
+    onValue(ref(database, `activities/${userUID}/group-3`), (snapshot) => {
+      const newActivities: Activities[] = []
+      snapshot.forEach((snapshotItem) => {
+        if (snapshotItem.key !== 'points') {
+          const data = snapshotItem.val()
+          newActivities.push(data)
+        } else {
+          const pointsData = snapshotItem.val().points
+          setAllG3Points(pointsData)
+        }
+      })
+      setActivitiesG3(newActivities)
+      fetchG3ArrayBuffers(newActivities)
     })
   }
 
@@ -110,47 +128,37 @@ export default function Home() {
     return buffers
   }
 
-  async function fetchG1ArrayBuffers() {
-    if (activitiesG1.length > 0) {
-      const imageUrlsG1 = activitiesG1.map((item) => item.image)
+  async function fetchG1ArrayBuffers(activities: Activities[]) {
+    if (activities.length > 0) {
+      const imageUrlsG1 = activities.map((item) => item.image)
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG1)
       setImagesArrayBuffersG1(buffers)
     }
   }
 
-  async function fetchG2ArrayBuffers() {
-    if (activitiesG2.length > 0) {
-      const imageUrlsG2 = activitiesG2.map((item) => item.image)
+  async function fetchG2ArrayBuffers(activities: Activities[]) {
+    if (activities.length > 0) {
+      const imageUrlsG2 = activities.map((item) => item.image)
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG2)
       setImagesArrayBuffersG2(buffers)
     }
   }
 
-  async function fetchG3ArrayBuffers() {
-    if (activitiesG3.length > 0) {
-      const imageUrlsG3 = activitiesG3.map((item) => item.image)
+  async function fetchG3ArrayBuffers(activities: Activities[]) {
+    if (activities.length > 0) {
+      const imageUrlsG3 = activities.map((item) => item.image)
       const buffers = await fetchImagesAsArrayBuffers(imageUrlsG3)
       setImagesArrayBuffersG3(buffers)
     }
   }
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoading(true)
-        fetchG1(user.uid)
-        fetchG2(user.uid)
-        fetchG3(user.uid)
-      }
-    })
-  }, [])
-
-  useEffect(() => {
-    fetchG1ArrayBuffers()
-    fetchG2ArrayBuffers()
-    fetchG3ArrayBuffers()
+    setLoading(true)
+    fetchG1()
+    fetchG2()
+    fetchG3()
     setLoading(false)
-  }, [activitiesG1, activitiesG2, activitiesG3])
+  }, [userUID])
 
   return (
     <div className="flex flex-row p-10 bg-primary h-[100vh] bg-opacity-10">
@@ -186,13 +194,13 @@ export default function Home() {
                 >
                   <FiPlus /> Nova atividade
                 </button>
-                <CreateActivityModal
+                <CreateEditActivityModal
                   open={openNewActivity}
                   onClose={() => setOpenNewActivity(false)}
                 />
                 <button
                   className="btn btn-primary btn-sm"
-                  disabled={loading || authStore.user == null}
+                  disabled={disableWordButton()}
                   onClick={() =>
                     generateFromUrl(
                       activitiesG1,
@@ -238,7 +246,7 @@ export default function Home() {
 interface IActivitiesCollapse {
   title: string
   activities: Activities[]
-  fetchActivities: (userId: string) => void
+  fetchActivities: (userUID: string) => void
 }
 
 function ActivitiesCollapse({

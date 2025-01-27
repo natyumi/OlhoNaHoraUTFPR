@@ -1,20 +1,21 @@
-import { create } from "zustand";
+import { create } from 'zustand'
 
 export interface AuthUser {
-  name: string;
-  course: string;
-  email: string;
-  Ra: number;
-  emailVerified: boolean;
-  token: string;
+  name: string
+  course: string
+  email: string
+  Ra: number
+  emailVerified: boolean
+  token: string
+  id: string
 }
 
 export interface AuthStore {
-  user: AuthUser | null;
-  setUser: (user: AuthUser | null) => void;
+  user: AuthUser | null
+  setUser: (user: AuthUser | null) => void
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
-  setUser: (user: AuthUser | null) => set(() => ({user}))
-}));
+  setUser: (user: AuthUser | null) => set(() => ({ user })),
+}))

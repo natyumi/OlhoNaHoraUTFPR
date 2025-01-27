@@ -1,20 +1,26 @@
 import { IoMdClose } from 'react-icons/io'
 import Input from '../components/Input'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { child, push, update, ref as refDB, increment } from 'firebase/database'
-import { database, storage, auth } from '../firebase'
+import { database, storage } from '../firebase'
 import { FaRegFileImage } from 'react-icons/fa'
-import { onAuthStateChanged } from 'firebase/auth'
+import { useAuthStore } from '../store/auth.store'
+import { Activities } from './Home'
 
-interface ICreateActivityModal {
+interface ICreateEditActivityModal {
   open: boolean
   onClose: () => void
+  activity?: Activities
+  editActivityBoolean?: boolean
 }
-export default function CreateActivityModal({
+
+export default function CreateEditActivityModal({
   open,
   onClose,
-}: ICreateActivityModal) {
+  activity,
+  editActivityBoolean = false,
+}: ICreateEditActivityModal) {
   const [name, setName] = useState<string>('')
   const [group, setGroup] = useState<string>('')
   const [points, setPoints] = useState<string>('')
@@ -31,16 +37,29 @@ export default function CreateActivityModal({
     group == '' ||
     points == '' ||
     description == '' ||
-    start == '' ||
-    end == '' ||
-    duration == ''
+    imgURL == ''
   const fileInputRef = useRef(null)
+  const authStore = useAuthStore()
+  const userUID = authStore.user?.id
+
+  function clearInputs() {
+    setName('')
+    setGroup('')
+    setPoints('')
+    setDescription('')
+    setStart('')
+    setEnd('')
+    setDuration('')
+    setImgURL('')
+    setImgName('')
+  }
 
   function uploadImage(event: React.ChangeEvent<HTMLInputElement>) {
-    event.preventDefault()
+    // event.preventDefault()
 
     const files = event.target.files
-    if (!files) return
+    console.log(files)
+    if (files == null || files.length <= 0) return
 
     setImgName(files[0].name)
     const storageRef = ref(storage, 'images/' + files[0].name)
@@ -74,45 +93,92 @@ export default function CreateActivityModal({
   }
 
   function createActivity() {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const newActivityKey = push(
-          child(refDB(database), `activities/${user.uid}/${group}`)
-        ).key
-        const newActivity = {
-          name: name,
-          group: group,
-          points: points,
-          description: description,
-          start: start,
-          end: end,
-          duration: duration,
-          image: imgURL,
-          id: newActivityKey,
-        }
-        update(
-          refDB(database, `activities/${user.uid}/${group}/${newActivityKey}`),
-          newActivity
-        )
-          .then(() => {
-            console.log('sucesso')
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-        update(refDB(database, `activities/${user.uid}/${group}/points`), {
-          points: increment(parseInt(points)),
-        })
-          .then(() => {
-            console.log('sucesso')
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-        onClose()
-      }
+    const newActivityKey = push(
+      child(refDB(database), `activities/${userUID}/${group}`)
+    ).key
+    const newActivity = {
+      name: name,
+      group: group,
+      points: points,
+      description: description,
+      start: start,
+      end: end,
+      duration: duration,
+      image: imgURL,
+      imageName: imgName,
+      id: newActivityKey,
+    }
+    update(
+      refDB(database, `activities/${userUID}/${group}/${newActivityKey}`),
+      newActivity
+    )
+      .then(() => {
+        console.log('sucesso')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    update(refDB(database, `activities/${userUID}/${group}/points`), {
+      points: increment(parseInt(points)),
     })
+      .then(() => {
+        console.log('sucesso')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    onClose()
+    clearInputs()
   }
+
+  function editActivity() {
+    const editActivity = {
+      name: name,
+      group: group,
+      points: points,
+      description: description,
+      start: start,
+      end: end,
+      duration: duration,
+      image: imgURL,
+      imageName: imgName,
+    }
+    update(
+      refDB(database, `activities/${userUID}/${group}/${activity!.id}`),
+      editActivity
+    )
+      .then(() => {
+        console.log('sucesso')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    update(refDB(database, `activities/${userUID}/${activity?.group}/points`), {
+      points: increment(-parseInt(activity!.points)),
+    })
+
+    update(refDB(database, `activities/${userUID}/${activity?.group}/points`), {
+      points: increment(parseInt(points)),
+    })
+
+    onClose()
+    clearInputs()
+  }
+
+  useEffect(() => {
+    if (activity) {
+      if (activity.name) setName(activity.name)
+      if (activity.group) setGroup(activity.group)
+      if (activity.points) setPoints(activity.points)
+      if (activity.description) setDescription(activity.description)
+      if (activity.start) setStart(activity.start)
+      if (activity.end) setEnd(activity.end)
+      if (activity.duration) setDuration(activity.duration)
+      if (activity.image) setImgURL(activity.image)
+      if (activity.imageName) setImgName(activity.imageName)
+    }
+  }, [activity])
 
   return (
     <dialog className={`modal ${open && 'modal-open'} animate-ping`}>
@@ -121,7 +187,9 @@ export default function CreateActivityModal({
           <p className="font-bold text-lg">Nova atividade</p>
           <button
             className="btn btn-ghost btn-circle btn-secondary btn-sm hover:bg-gray-200"
-            onClick={onClose}
+            onClick={() => {
+              onClose(); clearInputs()
+            }}
           >
             <IoMdClose size={16} />
           </button>
@@ -131,6 +199,7 @@ export default function CreateActivityModal({
             title="Nome da atividade"
             placeholder="Insira o nome da atividade"
             onChange={(e) => setName(e.target.value)}
+            value={name}
             required
           />
           <div>
@@ -141,6 +210,7 @@ export default function CreateActivityModal({
               className="textarea textarea-bordered w-full border-gray-200"
               placeholder="Descrição"
               onChange={(e) => setDescription(e.target.value)}
+              value={description}
             ></textarea>
           </div>
           <div className="flex flex-row gap-4">
@@ -148,19 +218,19 @@ export default function CreateActivityModal({
               title="Início"
               placeholder="Ex.: 14/08/2021"
               onChange={(e) => setStart(e.target.value)}
-              required
+              value={start}
             />
             <Input
               title="Término"
               placeholder="Ex.: 15/08/2021"
               onChange={(e) => setEnd(e.target.value)}
-              required
+              value={end}
             />
             <Input
               title="Duração"
               placeholder="Ex.: 12 horas"
               onChange={(e) => setDuration(e.target.value)}
-              required
+              value={duration}
             />
           </div>
           <div className="flex flex-row justify-between items-center gap-10">
@@ -173,7 +243,7 @@ export default function CreateActivityModal({
                   className="select select-sm w-full border border-gray-200 focus:border-gray-200"
                   onChange={(e) => setGroup(e.target.value)}
                 >
-                  <option disabled selected>
+                  <option disabled selected value={''}>
                     Escolha um grupo
                   </option>
                   <option value={'group-1'}>Grupo 1</option>
@@ -188,12 +258,14 @@ export default function CreateActivityModal({
               width="w-20"
               onChange={(e) => setPoints(e.target.value)}
               required
+              value={points}
             />
           </div>
 
           <div>
             <p className="text-sm font-medium text-secondary mb-2">
-              Arquivo comprobatório (png) <span className="text-error">*</span>
+              Arquivo comprobatório (png, jpg, jpeg){' '}
+              <span className="text-error">*</span>
             </p>
             <div className="flex flex-row gap-2 w-full items-center">
               <input
@@ -201,7 +273,7 @@ export default function CreateActivityModal({
                 className="hidden"
                 onChange={uploadImage}
                 ref={fileInputRef}
-                accept="image/png"
+                accept="image/png, image/jpeg, image/jpg"
               />
               <button
                 className="btn btn-sm btn-circle bg-gray-300 border-none hover:bg-gray-300"
@@ -226,9 +298,15 @@ export default function CreateActivityModal({
           <button
             className="btn btn-primary btn-sm disabled:bg-gray-200"
             disabled={buttonDisabled}
-            onClick={createActivity}
+            onClick={() => {
+              if (activity && editActivityBoolean) {
+                editActivity()
+              } else {
+                createActivity()
+              }
+            }}
           >
-            Cadastrar
+            {activity && editActivityBoolean ? 'Editar' : 'Cadastrar'}
           </button>
         </div>
       </div>

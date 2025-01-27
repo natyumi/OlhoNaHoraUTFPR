@@ -1,43 +1,36 @@
-import { useState } from 'react';
-import logo from "../assets/Logo.svg";
-import { auth, database } from '../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { onValue, ref } from 'firebase/database';
-import { useAuthStore } from '../store/auth.store';
+import { useState } from 'react'
+import logo from '../assets/Logo.svg'
+import { auth, database } from '../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { get, ref } from 'firebase/database'
+import { useAuthStore } from '../store/auth.store'
 
 export default function LogIn() {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [error, setError] = useState<string>("")
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const disabledButton = ((email == "" || password == "") ? true : false)
+  const disabledButton = email == '' || password == ''
   const navigate = useNavigate()
   const authStore = useAuthStore()
 
-  function logIn() {
-    setLoading(true);
+  async function logIn() {
+    setLoading(true)
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        fetchUser()
-        navigate("/home")
+        const userUID = userCredential.user.uid
+        get(ref(database, `users/${userUID}`)).then(
+          (snapshot) => {
+            authStore.setUser(snapshot.val())
+            navigate('/home')
+          }
+        )
       })
       .catch((error) => {
         setError(error.message)
       })
     setLoading(false)
-  }
-
-  function fetchUser(){
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        onValue(ref(database, `users/${user.uid}`), (snapshot) => {
-          if (snapshot.exists()) {
-            authStore.setUser(snapshot.val())
-          }
-        });
-      }
-    })
   }
 
   return (
@@ -71,12 +64,12 @@ export default function LogIn() {
             />
             <button
               className="btn btn-ghost text-primary p-1 justify-start hover:underline"
-              onClick={() => navigate("/forgot-password")}
+              onClick={() => navigate('/forgot-password')}
             >
               Esqueceu a senha?
             </button>
           </label>
-          <div className='max-w-96 w-full flex flex-col items-center'>
+          <div className="max-w-96 w-full flex flex-col items-center">
             <button
               className="btn btn-primary max-w-96 w-full disabled:bg-stone-600"
               disabled={disabledButton}
@@ -92,7 +85,7 @@ export default function LogIn() {
               Não possui cadastro?
               <button
                 className="btn btn-ghost text-primary p-1 hover:underline"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate('/register')}
               >
                 Se cadastre!
               </button>
@@ -111,5 +104,5 @@ export default function LogIn() {
         </div>
       </div>
     </div>
-  );
+  )
 }

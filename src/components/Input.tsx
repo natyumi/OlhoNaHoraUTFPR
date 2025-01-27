@@ -34,7 +34,6 @@ export default function Input({
         className={`input ${inputSize} w-full ${width} input-bordered border-gray-200`}
         onChange={onChange}
         value={value}
-        tabIndex={0}
       />
     </div>
   );

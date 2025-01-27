@@ -4,10 +4,11 @@ import { MdModeEditOutline } from 'react-icons/md'
 import { FiTrash2 } from 'react-icons/fi'
 import { useState } from 'react'
 import DeleteActivityModal from '../DeleteActivityModal'
+import CreateEditActivityModal from '../CreateEditActivityModal'
 
 interface IActivityTable {
   activities: Activities[]
-  fetchActivities: (userId: string) => void
+  fetchActivities: (userUID: string) => void
 }
 
 export default function ActivityTable({
@@ -16,15 +17,18 @@ export default function ActivityTable({
 }: IActivityTable) {
   const [openDeleteActivityModal, setOpenDeleteActivityModal] =
     useState<boolean>(false)
+  const [openEditActivityModal, setOpenEditActivityModal] =
+    useState<boolean>(false)
   const [activity, setActivity] = useState<Activities>({
     name: '',
     group: '',
-    points: 0,
+    points: '',
     description: '',
     start: '',
     end: '',
     duration: '',
     image: '',
+    imageName: '',
     id: '',
     imageBuffer: new ArrayBuffer(0),
   })
@@ -71,6 +75,10 @@ export default function ActivityTable({
                       <button
                         className="tooltip btn btn-ghost btn-sm p-0"
                         data-tip="Editar atividade"
+                        onClick={() => {
+                          setOpenEditActivityModal(true)
+                          setActivity(activity)
+                        }}
                       >
                         <MdModeEditOutline />
                       </button>
@@ -99,6 +107,12 @@ export default function ActivityTable({
         onClose={() => setOpenDeleteActivityModal(false)}
         activity={activity}
         fetchActivities={fetchActivities}
+      />
+      <CreateEditActivityModal
+        open={openEditActivityModal}
+        onClose={() => setOpenEditActivityModal(false)}
+        activity={activity}
+        editActivityBoolean={true}
       />
     </div>
   )
