@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/OlhoNaHoraUTFPR/static/css/main.d81130d4.css",
+    "main.js": "/OlhoNaHoraUTFPR/static/js/main.1e3e7d28.js",
+    "static/media/Logo.svg": "/OlhoNaHoraUTFPR/static/media/Logo.de18d864364417027fcd54024b92c1aa.svg",
+    "static/media/Logo2.svg": "/OlhoNaHoraUTFPR/static/media/Logo2.917f6eabc41726672fd60d0a3b644ac6.svg",
+    "index.html": "/OlhoNaHoraUTFPR/index.html",
+    "main.d81130d4.css.map": "/OlhoNaHoraUTFPR/static/css/main.d81130d4.css.map",
+    "main.1e3e7d28.js.map": "/OlhoNaHoraUTFPR/static/js/main.1e3e7d28.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d81130d4.css",
+    "static/js/main.1e3e7d28.js"
+  ]
+}
