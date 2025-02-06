@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { get, ref } from 'firebase/database'
 import { useAuthStore } from '../store/auth.store'
+import { MdReportGmailerrorred } from 'react-icons/md'
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>('')
@@ -20,17 +21,16 @@ export default function LogIn() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const userUID = userCredential.user.uid
-        get(ref(database, `users/${userUID}`)).then(
-          (snapshot) => {
-            authStore.setUser(snapshot.val())
-            navigate('/home')
-          }
-        )
+        get(ref(database, `users/${userUID}`)).then((snapshot) => {
+          authStore.setUser(snapshot.val())
+          setLoading(false)
+          navigate('/home')
+        })
       })
       .catch((error) => {
         setError(error.message)
+        setLoading(false)
       })
-    setLoading(false)
   }
 
   return (
@@ -70,6 +70,10 @@ export default function LogIn() {
             </button>
           </label>
           <div className="max-w-96 w-full flex flex-col items-center">
+            <div className='p-2 flex flex-row items-center gap-2 bg-red-400 rounded-lg w-full mb-2'>
+              <MdReportGmailerrorred size={16}/>
+              <p className='text-sm'>Credenciais inválidas</p>
+            </div>
             <button
               className="btn btn-primary max-w-96 w-full disabled:bg-stone-600"
               disabled={disabledButton}
