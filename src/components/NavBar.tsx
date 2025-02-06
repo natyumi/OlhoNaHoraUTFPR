@@ -1,10 +1,12 @@
-import { FaHome } from "react-icons/fa";
-import logo2 from "../assets/Logo2.svg";
-import { IoIosSchool } from "react-icons/io";
-import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { useAuthStore } from "../store/auth.store";
+import { FaHome } from 'react-icons/fa'
+import logo2 from '../assets/Logo2.svg'
+import { IoIosSchool } from 'react-icons/io'
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { auth } from '../firebase'
+import { useAuthStore } from '../store/auth.store'
+import { RiLogoutBoxLine } from 'react-icons/ri'
+import { BsPersonVcard } from 'react-icons/bs'
 
 export default function NavBar() {
   const navigate = useNavigate()
@@ -12,11 +14,11 @@ export default function NavBar() {
   function signOUT() {
     signOut(auth)
       .then(() => {
-        navigate("/");
+        navigate('/')
       })
       .catch((error) => {
-        console.log(error);
-      });
+        console.log(error)
+      })
   }
   return (
     <div className="navbar bg-primary px-10 flex flex-row justify-between">
@@ -34,7 +36,7 @@ export default function NavBar() {
             role="button"
             className="btn btn-circle btn-secondary btn-lg font-medium"
           >
-            <span>{authStore.user?.name.slice(0,1)}</span>
+            <span>{authStore.user?.name.slice(0, 1).toLocaleUpperCase()}</span>
           </div>
           <ul
             tabIndex={0}
@@ -44,15 +46,22 @@ export default function NavBar() {
               <p className="font-medium text-base">{authStore.user?.name}</p>
             </li>
             <hr />
-            <li className="mt-2">
-              <a>Perfil</a>
+            <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md">
+              <a>
+                {/* <BsPersonVcard size={18}/> */}
+                Perfil
+              </a>
             </li>
-            <li className="mt-2">
-              <a onClick={signOUT}>Sair</a>
+            <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md text-error">
+              <a onClick={signOUT}>
+                {' '}
+                <RiLogoutBoxLine className='text-error' size={18}/>
+                Sair
+              </a>
             </li>
           </ul>
         </div>
       </div>
     </div>
-  );
+  )
 }
