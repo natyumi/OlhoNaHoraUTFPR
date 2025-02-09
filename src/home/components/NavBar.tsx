@@ -30,7 +30,13 @@ export default function NavBar() {
           <FaHome /> Início
         </button>
         <button className="btn btn-ghost hover:underline btn-md p-0 text-base">
-          <IoIosSchool /> Projetos
+          <a
+            href="https://lookerstudio.google.com/u/0/reporting/60006be7-dcda-4cdb-a68a-155524657d3e/page/9CdfD?s=idGX-_rm6H4"
+            target="_blank"
+            className='flex flex-row items-center gap-2'
+          >
+            <IoIosSchool /> Projetos
+          </a>
         </button>
         <div className="dropdown dropdown-end">
           <div
@@ -49,9 +55,7 @@ export default function NavBar() {
             </li>
             <hr />
             <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md">
-              <a onClick={() => setOpenEditProfile(true)}>
-                Editar perfil
-              </a>
+              <a onClick={() => setOpenEditProfile(true)}>Editar perfil</a>
             </li>
             <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md text-error">
               <a onClick={signOUT}>
