@@ -10,7 +10,7 @@ import { MdReportGmailerrorred } from 'react-icons/md'
 export default function LogIn() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [, setError] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const disabledButton = email == '' || password == ''
   const navigate = useNavigate()
@@ -70,10 +70,12 @@ export default function LogIn() {
             </button>
           </label>
           <div className="max-w-96 w-full flex flex-col items-center">
-            <div className='p-2 flex flex-row items-center gap-2 bg-red-400 rounded-lg w-full mb-2'>
-              <MdReportGmailerrorred size={16}/>
-              <p className='text-sm'>Credenciais inválidas</p>
-            </div>
+            {error != '' && (
+              <div className='p-2 flex flex-row items-center gap-2 bg-red-400 rounded-lg w-full mb-2'>
+                <MdReportGmailerrorred size={16}/>
+                <p className='text-sm'>Credenciais inválidas</p>
+              </div>
+            )}
             <button
               className="btn btn-primary max-w-96 w-full disabled:bg-stone-600"
               disabled={disabledButton}
