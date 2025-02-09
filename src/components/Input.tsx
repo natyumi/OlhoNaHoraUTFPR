@@ -1,25 +1,25 @@
 interface IInput {
-  title?: string;
-  titleColor?: string;
-  placeholder?: string;
-  type?: string;
-  width?: string;
-  value?: string | number;
-  onChange: (e: any) => void;
-  required?: boolean;
-  inputSize?: string;
+  title?: string
+  titleColor?: string
+  placeholder?: string
+  type?: string
+  width?: string
+  value?: string | number
+  onChange: (e: any) => void
+  required?: boolean
+  inputSize?: string
 }
 
 export default function Input({
   title,
-  placeholder = "",
-  type = "text",
-  width = "w-full",
+  placeholder = '',
+  type = 'text',
+  width = 'w-full',
   onChange,
   value,
   required,
-  inputSize = "input-sm",
-  titleColor = "text-secondary"
+  inputSize = 'input-sm',
+  titleColor = 'text-secondary',
 }: IInput) {
   return (
     <div className={`${width}`}>
@@ -36,5 +36,5 @@ export default function Input({
         value={value}
       />
     </div>
-  );
+  )
 }

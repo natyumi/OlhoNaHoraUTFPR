@@ -38,9 +38,9 @@ export default function CreateEditActivityModal({
     points == '' ||
     description == '' ||
     imgURL == ''
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const authStore = useAuthStore()
-  const userUID = authStore.user?.id
+  const userUID = authStore.user?.uid
 
   function clearInputs() {
     setName('')
@@ -52,6 +52,9 @@ export default function CreateEditActivityModal({
     setDuration('')
     setImgURL('')
     setImgName('')
+    if(fileInputRef.current){
+      fileInputRef.current.value = ''
+    }
   }
 
   function uploadImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -168,17 +171,17 @@ export default function CreateEditActivityModal({
 
   useEffect(() => {
     if (activity) {
-      if (activity.name) setName(activity.name)
-      if (activity.group) setGroup(activity.group)
-      if (activity.points) setPoints(activity.points)
-      if (activity.description) setDescription(activity.description)
-      if (activity.start) setStart(activity.start)
-      if (activity.end) setEnd(activity.end)
-      if (activity.duration) setDuration(activity.duration)
-      if (activity.image) setImgURL(activity.image)
-      if (activity.imageName) setImgName(activity.imageName)
+      setName(activity.name ?? '')
+      setGroup(activity.group ?? '')
+      setPoints(activity.points ?? '')
+      setDescription(activity.description ?? '')
+      setStart(activity.start ?? '')
+      setEnd(activity.end ?? '')
+      setDuration(activity.duration ?? '')
+      setImgURL(activity.image ?? '')
+      setImgName(activity.imageName ?? '')
     }
-  }, [activity])
+  }, [open])
 
   return (
     <dialog className={`modal ${open && 'modal-open'} animate-ping`}>
@@ -188,7 +191,8 @@ export default function CreateEditActivityModal({
           <button
             className="btn btn-ghost btn-circle btn-secondary btn-sm hover:bg-gray-200"
             onClick={() => {
-              onClose(); clearInputs()
+              onClose()
+              clearInputs()
             }}
           >
             <IoMdClose size={16} />
@@ -242,6 +246,7 @@ export default function CreateEditActivityModal({
                 <select
                   className="select select-sm w-full border border-gray-200 focus:border-gray-200"
                   onChange={(e) => setGroup(e.target.value)}
+                  value={group}
                 >
                   <option disabled selected value={''}>
                     Escolha um grupo
