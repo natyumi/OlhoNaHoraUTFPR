@@ -7,7 +7,7 @@ export interface AuthUser {
   Ra: number
   emailVerified: boolean
   token: string
-  id: string
+  uid: string
 }
 
 export interface AuthStore {

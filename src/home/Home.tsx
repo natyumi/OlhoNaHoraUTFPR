@@ -43,7 +43,7 @@ export default function Home() {
   >([])
   const [loading, setLoading] = useState<boolean>(true)
   const authStore = useAuthStore()
-  const userUID = authStore.user?.id
+  const userUID = authStore.user?.uid
 
   function disableWordButton() {
     if (loading) return true
@@ -61,6 +61,8 @@ export default function Home() {
       console.log(userUID)
       if (snapshot.exists()) {
         const newActivities: Activities[] = []
+        const imageUrls: string[] = []
+
         snapshot.forEach((snapshotItem) => {
           if (snapshotItem.key !== 'points') {
             const data = snapshotItem.val()
