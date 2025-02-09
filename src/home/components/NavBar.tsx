@@ -1,14 +1,16 @@
 import { FaHome } from 'react-icons/fa'
-import logo2 from '../assets/Logo2.svg'
+import logo2 from '../../assets/Logo2.svg'
 import { IoIosSchool } from 'react-icons/io'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
-import { auth } from '../firebase'
-import { useAuthStore } from '../store/auth.store'
+import { auth } from '../../firebase'
+import { useAuthStore } from '../../store/auth.store'
 import { RiLogoutBoxLine } from 'react-icons/ri'
-import { BsPersonVcard } from 'react-icons/bs'
+import { useState } from 'react'
+import { EditProfileModal } from '../EditProfileModal'
 
 export default function NavBar() {
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const navigate = useNavigate()
   const authStore = useAuthStore()
   function signOUT() {
@@ -47,21 +49,24 @@ export default function NavBar() {
             </li>
             <hr />
             <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md">
-              <a>
-                {/* <BsPersonVcard size={18}/> */}
-                Perfil
+              <a onClick={() => setOpenEditProfile(true)}>
+                Editar perfil
               </a>
             </li>
             <li className="mt-2 hover:bg-primary hover:bg-opacity-20 hover:rounded-md text-error">
               <a onClick={signOUT}>
                 {' '}
-                <RiLogoutBoxLine className='text-error' size={18}/>
+                <RiLogoutBoxLine className="text-error" size={18} />
                 Sair
               </a>
             </li>
           </ul>
         </div>
       </div>
+      <EditProfileModal
+        open={openEditProfile}
+        onClose={() => setOpenEditProfile(false)}
+      />
     </div>
   )
 }

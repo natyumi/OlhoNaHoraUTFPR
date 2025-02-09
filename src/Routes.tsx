@@ -6,7 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth, database } from './firebase'
 import Register from './auth/Register'
 import ForgotPassword from './auth/ForgotPassword'
-import NavBar from './components/NavBar'
+import NavBar from './home/components/NavBar'
 import { onValue, ref } from 'firebase/database'
 import { useAuthStore } from './store/auth.store'
 
