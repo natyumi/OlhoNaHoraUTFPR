@@ -1,4 +1,4 @@
-import { IoIosEyeOff, IoMdClose, IoMdEye } from 'react-icons/io'
+import { IoMdClose} from 'react-icons/io'
 import Input from '../components/Input'
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '../store/auth.store'
@@ -19,7 +19,7 @@ export function EditProfileModal({ open, onClose }: IEditProfileModal) {
   const [email, setEmail] = useState('')
   const [Ra, setRa] = useState(0)
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
 
   useEffect(() => {
     if (authStore.user) {
@@ -36,6 +36,7 @@ export function EditProfileModal({ open, onClose }: IEditProfileModal) {
       !course ||
       !email ||
       !Ra ||
+      invalidPassword || 
       (name === authStore.user?.name &&
         course === authStore.user?.course &&
         email === authStore.user?.email &&
@@ -85,7 +86,7 @@ export function EditProfileModal({ open, onClose }: IEditProfileModal) {
   }
   return (
     <dialog className={`modal ${open && 'modal-open'} animate-ping`}>
-      <div className="modal-box p-8 grid gap-8">
+      <div className="bg-white rounded-lg p-8 grid gap-8 min-w-[600px]">
         <div className="flex flex-row items-center justify-between">
           <p className="font-bold text-lg">Editar perfil</p>
           <button
@@ -135,27 +136,14 @@ export function EditProfileModal({ open, onClose }: IEditProfileModal) {
             value={email}
           />
 
-          <div className="flex flex-col">
-            <p className="text-sm font-medium mb-2"> Nova senha</p>
-            <div className="border flex flex-row items-center justify-between rounded-lg border-gray-200 px-2">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Insira sua nova senha"
-                onChange={(e) => setPassword(e.target.value)}
-                className="input input-xs w-full border-none"
-              />
-              <button
-                className="btn btn-ghost btn-circle btn-sm"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <IoIosEyeOff size={18} />
-                ) : (
-                  <IoMdEye size={18} />
-                )}
-              </button>
-            </div>
-          </div>
+          <Input
+            title="Nova senha"
+            placeholder="Insira sua nova senha"
+            onChange={(e) => setPassword(e.target.value)}
+            password
+            setInvalidPassword={setInvalidPassword}
+            inputSize="input-md"
+          />
 
           <Input
             title="Código do aluno (R.A)"

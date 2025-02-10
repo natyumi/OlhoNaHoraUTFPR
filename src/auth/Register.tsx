@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import logo from '../assets/Logo.svg'
-import { IoIosEyeOff, IoMdEye } from 'react-icons/io'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth, database } from '../firebase'
 import { ref, set } from 'firebase/database'
@@ -8,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import Input from '../components/Input'
 
 export default function Register() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [name, setName] = useState<string>('')
@@ -16,7 +15,7 @@ export default function Register() {
   const [Ra, setRa] = useState<number>(0)
   const navigate = useNavigate()
   const disabledButton =
-    email == '' || course == '' || password == '' || name == '' || Ra == 0
+    email == '' || course == '' || password == '' || name == '' || Ra == 0 || invalidPassword
 
   async function submitUser(e: any) {
     e.preventDefault()
@@ -90,30 +89,18 @@ export default function Register() {
             inputSize="input-md"
           />
 
-          <label className="form-control max-w-96 w-full">
-            <div className="label">
-              <span className="label-text text-white">
-                Senha <span className="text-error">*</span>
-              </span>
-            </div>
-            <div className="input input-bordered flex flex-row items-center justify-between">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Insira sua senha"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                className="btn btn-ghost btn-circle btn-sm"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <IoIosEyeOff size={18} />
-                ) : (
-                  <IoMdEye size={18} />
-                )}
-              </button>
-            </div>
-          </label>
+          <Input
+            title="Senha"
+            width="w-full max-w-96"
+            placeholder="Insira sua senha"
+            onChange={(e) => setPassword(e.target.value)}
+            titleColor="text-white"
+            setInvalidPassword={setInvalidPassword}
+            password
+            required
+            passwordPadding='p-2'
+            passwordText='text-sm'
+          />
 
           <Input
             title="Código do aluno (R.A)"
